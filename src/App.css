@@ -1,0 +1,27 @@
+.App {
+  text-align: center;
+}
+
+/* Add your custom styles here */
+
+/* Media queries for responsive design */
+@media only screen and (max-width: 768px) {
+  /* For mobile devices */
+  body {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+  /* For tablets */
+  body {
+    font-size: 18px;
+  }
+}
+
+@media only screen and (min-width: 1025px) {
+  /* For desktop devices */
+  body {
+    font-size: 20px;
+  }
+}
