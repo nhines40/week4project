@@ -1,27 +1,35 @@
-.App {
-  text-align: center;
+body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
 }
 
-/* Add your custom styles here */
-
-/* Media queries for responsive design */
-@media only screen and (max-width: 768px) {
-  /* For mobile devices */
-  body {
-    font-size: 16px;
-  }
+.container {
+    width: 300px;
+    margin: 100px auto;
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-@media only screen and (min-width: 769px) and (max-width: 1024px) {
-  /* For tablets */
-  body {
-    font-size: 18px;
-  }
+h1 {
+    color: #333;
+    margin-bottom: 20px;
 }
 
-@media only screen and (min-width: 1025px) {
-  /* For desktop devices */
-  body {
-    font-size: 20px;
-  }
+.button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #3e8e41; /* darker green background on hover */
 }

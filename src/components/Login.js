@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -12,6 +14,7 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:3000/api/api/login', { email, password });
       console.log(response);
+      navigate('/api');
     } catch (error) {
       console.error(error);
     }

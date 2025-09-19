@@ -1,117 +1,112 @@
 const express = require('express');
+const axios = require('axios');
 const mongoose = require('mongoose');
-const passport = require('passport');
-const FacebookStrategy = require('passport-facebook').Strategy;
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-
 const app = express();
+mongoose.connect('mongodb://localhost:27017/myDatabase', { useNewUrlParser: true, useUnifiedTopology: true });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/mydatabase', { useNewUrlParser: true, useUnifiedTopology: true });
-
-// Define the User model
-const userSchema = new mongoose.Schema({
-  facebookId: { type: String, required: true },
-  googleId: { type: String, required: true },
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+// Mongoose model to represent the user's information
+const User = mongoose.model('loginCredentials', {
+    name: String,
+    email: String,
+    linkedinId: String,
+    googleId: String,
 });
 
-const User = mongoose.model('User', userSchema);
+// OAuth credentials
+const linkedinClientId = '<linkedin-client-id>';
+const linkedinClientSecret = '<linkedin-client-secret>';
 
-// Configure Passport strategies
-passport.use(new FacebookStrategy({
-  clientID: 'YOUR_APP_ID',
-  clientSecret: 'YOUR_APP_SECRET',
-  callbackURL: 'http://localhost:3000/auth/facebook/callback',
-}, async (accessToken, refreshToken, profile, cb) => {
-  try {
-    const user = await User.findOne({ facebookId: profile.id });
-    if (!user) {
-      const newUser = new User({ facebookId: profile.id, name: profile.displayName });
-      await newUser.save();
-      return cb(null, newUser);
-    } else {
-      return cb(null, user);
-    }
-  } catch (err) {
-    console.error(err);
-  }
-}));
+const googleClientId = '<google-client-id>';
+const googleClientSecret = '<google-client-secret>';
 
-passport.use(new GoogleStrategy({
-  clientID: 'YOUR_APP_ID',
-  clientSecret: 'YOUR_APP_SECRET',
-  callbackURL: 'http://localhost:3001/auth/google/callback',
-}, async (accessToken, refreshToken, profile, cb) => {
-  try {
-    const user = await User.findOne({ googleId: profile.id });
-    if (!user) {
-      const newUser = new User({ googleId: profile.id, name: profile.displayName });
-      await newUser.save();
-      return cb(null, newUser);
-    } else {
-      return cb(null, user);
-    }
-  } catch (err) {
-    console.error(err);
-  }
-}));
-
-// Serialize user
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-// Deserialize user
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
-});
+// Redirect URLs
+const linkedinRedirectUrl = 'http://localhost:3000/auth/linkedin/callback';
+const googleRedirectUrl = 'http://localhost:3000/auth/google/callback';
 
 // Routes
-app.post('/api/login', async (req, res) => {
-  try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      return res.status(401).send({ message: 'Invalid email or password' });
-    }
-    if (user.password !== req.body.password) {
-      return res.status(401).send({ message: 'Invalid email or password' });
-    }
-    return res.send({ message: 'Login successful' });
-  } catch (err) {
-    console.error(err);
-  }
+app.get('/auth/linkedin', (req, res) => {
+    const url = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${linkedinClientId}&redirect_uri=${linkedinRedirectUrl}&state=foobar&scope=liteprofile%20emailaddress%20w_member_social`;
+    res.redirect(url);
 });
 
-app.post('/api/register', async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    return res.send({ message: 'Registration successful' });
-  } catch (err) {
-    console.error(err);
-  }
+app.get('/auth/linkedin/callback', (req, res) => {
+    const code = req.query.code;
+    const state = req.query.state;
+
+    axios.post(`https://www.linkedin.com/oauth/v2/accessToken`, {
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: linkedinClientId,
+        client_secret: linkedinClientSecret,
+        redirect_uri: linkedinRedirectUrl,
+    }).then((response) => {
+        const accessToken = response.data.access_token;
+
+        return axios.get(`https://api.linkedin.com/v2/me`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+    }).then((response) => {
+        const userProfile = response.data;
+
+        // Store user's profile information in MongoDB database
+        const user = new User({
+            name: userProfile.firstName + ' ' + userProfile.lastName,
+            email: userProfile.emailAddress,
+            linkedinId: userProfile.id,
+        });
+
+        return user.save();
+    }).then(() => {
+        console.log('User saved to database!');
+        res.send(`LinkedIn login successful!`);
+    }).catch((error) => {
+        console.error(error);
+        res.send(`LinkedIn login failed!`);
+    });
 });
 
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-  res.redirect('/api');
+app.get('/auth/google', (req, res) => {
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${googleClientId}&redirect_uri=${googleRedirectUrl}&scope=profile%20email`;
+    res.redirect(url);
 });
 
-app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
-app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
-  res.redirect('/api');
+app.get('/auth/google/callback', (req, res) => {
+    const code = req.query.code;
+
+    axios.post(`https://oauth2.googleapis.com/token`, {
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: googleClientId,
+        client_secret: googleClientSecret,
+        redirect_uri: googleRedirectUrl,
+    }).then((response) => {
+        const accessToken = response.data.access_token;
+        return axios.get(`https://openidconnect.googleapis.com/v1/userinfo`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+    }).then((response) => {
+        const userProfile = response.data;
+
+        // Store user's profile information in MongoDB database
+        const user = new User({
+            name: userProfile.name,
+            email: userProfile.email,
+            googleId: userProfile.sub,
+        });
+        return user.save();
+    }).then(() => {
+        console.log('User saved to database!');
+        res.send(`Google login successful!`);
+    }).catch((error) => {
+        console.error(error);
+        res.send(`Google login failed!`);
+    });
 });
 
 app.listen(3001, () => {
-  console.log('Server listening on port 3001');
+    console.log('Server started on port 3001');
 });
