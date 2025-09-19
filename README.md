@@ -1,70 +1,39 @@
-# Getting Started with Create React App
+# Social Media Login
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Prerequisites
 
-## Available Scripts
+Node.js
+MongoDB
+LinkedIn Developer account
+Google Developer account
 
-In the project directory, you can run:
+## Setup
 
-### `npm start`
+1. Clone this repository
+2. Install the dependencies using `npm install <dependency>`
+3. Create a new MongoDB database and add the connection string to the mongoose.connect() function in server.js
+4. Create a new LinkedIn Developer account and add the client ID and client secret to the linkedinClientId and linkedinClientSecret variables in server.js and app.js
+5. Create a new Google Developer account and add the client ID and client secret to the googleClientId and googleClientSecret variables in server.js and app.js
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Configuring Social Media Login
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+LinkedIn:
+1. Go to the LinkedIn Developer dashboard and create a new application
+2. Add the authorized redirect URI (`http://localhost:3000/auth/linkedin/callback`) to the application settings
+3. Get the client ID and client secret
 
-### `npm test`
+Google:
+1. Go to the Google Developer dashboard and create a new project
+2. Add the authorized redirect URI (`http://localhost:3000/auth/google/callback`) to the credentials settings
+3. Get the client ID and client secret
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Running the Project
 
-### `npm run build`
+1. Start your MongoDB server either in the MongoDB Compass UI or on the command line
+2. Start the server by running `npm start`
+3. Open a web browser and go to `http://localhost:3000`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Troubleshooting Guides
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Connecting to MongoDB: Double heck the MongoDB connection string and ensure that the database is running/connected.
+2. Error with social media login: Double check the client ID and client secret for the social media platform and ensure that the authorized redirect URI is correcttly configured.
