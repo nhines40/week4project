@@ -103,11 +103,10 @@ app.get('/auth/linkedin/callback', (req, res) => {
         email: userProfile.emailAddress,
         linkedinId: userProfile.id,
       });
-
       return user.save();
     })
     .then(() => {
-      res.redirect('/crud');
+      res.redirect('/crud?code=linkedin');
     })
     .catch(error => {
       console.error(error);
@@ -150,7 +149,7 @@ app.get('/auth/google/callback', (req, res) => {
       return user.save();
     })
     .then(() => {
-      res.redirect('/crud');
+      res.redirect('/crud?code=google');
     })
     .catch(error => {
       console.error(error);
