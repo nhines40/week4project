@@ -2,12 +2,16 @@ const axios = window.axios;
 const React = window.React;
 const ReactDOM = window.ReactDOM;
 
+// Function to handle LinkedIn login
 function linkedinLogin() {
-  window.location.href = 'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=YOUR_LINKEDIN_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&state=foobar&scope=liteprofile%20emailaddress%20w_member_social';
+  window.location.href = ' /auth/linkedin';
 }
+npx babel --presets @babel/preset-react,@babel/preset-env public/app.js --out-file public/app-transpiled.js
 
+
+// Function to handle Google login
 function googleLogin() {
-  window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=profile%20email';
+  window.location.href = '/auth/google';
 }
 
 function Crud() {

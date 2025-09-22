@@ -2,6 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const mongoose = require('mongoose');
 const app = express();
+const https = require('https');
+
 mongoose.connect('mongodb://localhost:27017/myDatabase', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Mongoose model to represent the user's information
@@ -15,12 +17,17 @@ const User = mongoose.model('loginCredentials', {
 // OAuth credentials
 const linkedinClientId = '<linkedin-client-id>';
 const linkedinClientSecret = '<linkedin-client-secret>';
-const googleClientId = '<google-client-id>';
-const googleClientSecret = '<google-client-secret>';
+const googleClientId = '';
+const googleClientSecret = '';
+
 
 // redirect URLs
 const linkedinRedirectUrl = 'http://localhost:3000/auth/linkedin/callback';
 const googleRedirectUrl = 'http://localhost:3000/auth/google/callback';
+
+axios.defaults.httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 // API routes
 app.get('/api/users', (req, res) => {
@@ -118,6 +125,7 @@ app.get('/auth/google', (req, res) => {
   const url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${googleClientId}&redirect_uri=${googleRedirectUrl}&scope=profile%20email`;
   res.redirect(url);
 });
+
 
 app.get('/auth/google/callback', (req, res) => {
   const code = req.query.code;
