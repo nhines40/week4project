@@ -20,7 +20,6 @@ const linkedinClientSecret = '<linkedin-client-secret>';
 const googleClientId = '';
 const googleClientSecret = '';
 
-
 // redirect URLs
 const linkedinRedirectUrl = 'http://localhost:3000/auth/linkedin/callback';
 const googleRedirectUrl = 'http://localhost:3000/auth/google/callback';
@@ -113,7 +112,7 @@ app.get('/auth/linkedin/callback', (req, res) => {
       return user.save();
     })
     .then(() => {
-      res.redirect('/crud?code=linkedin');
+      res.redirect('/?code=linkedin');
     })
     .catch(error => {
       console.error(error);
@@ -125,7 +124,6 @@ app.get('/auth/google', (req, res) => {
   const url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${googleClientId}&redirect_uri=${googleRedirectUrl}&scope=profile%20email`;
   res.redirect(url);
 });
-
 
 app.get('/auth/google/callback', (req, res) => {
   const code = req.query.code;
@@ -157,7 +155,7 @@ app.get('/auth/google/callback', (req, res) => {
       return user.save();
     })
     .then(() => {
-      res.redirect('/crud?code=google');
+      res.redirect('/?code=google');
     })
     .catch(error => {
       console.error(error);
