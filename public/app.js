@@ -16,6 +16,8 @@ function Crud() {
   const [users, setUsers] = React.useState([]);
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [updateName, setUpdateName] = React.useState('');
+  const [updateEmail, setUpdateEmail] = React.useState('');
 
   React.useEffect(() => {
     axios.get('/api/users')
@@ -28,9 +30,11 @@ function Crud() {
   }, []);
 
   const createUser = () => {
-    axios.post('/api/users', { name, email })
+    axios.post('/api/users', { name: name, email: email })
       .then(response => {
         setUsers([...users, response.data]);
+        setName('');
+        setEmail('');
       })
       .catch(error => {
         console.error(error);
@@ -38,9 +42,11 @@ function Crud() {
   };
 
   const updateUser = (id) => {
-    axios.put(`/api/users/${id}`, { name, email })
+    axios.put(`/api/users/${id}`, { name: updateName, email: updateEmail })
       .then(response => {
         setUsers(users.map(user => user._id === id ? response.data : user));
+        setUpdateName('');
+        setUpdateEmail('');
       })
       .catch(error => {
         console.error(error);
@@ -73,12 +79,22 @@ function Crud() {
     React.createElement('ul', null,
       users.map(user => React.createElement('li', { key: user._id },
         React.createElement('span', null, `${user.name} (${user.email})`),
-        React.createElement('button', { onClick: () => updateUser(user._id) }, 'Update'),
+        React.createElement('form', { onSubmit: e => {
+          e.preventDefault();
+          setUpdateName(document.getElementById(`name-${user._id}`).value);
+          setUpdateEmail(document.getElementById(`email-${user._id}`).value);
+          updateUser(user._id);
+        } },
+          React.createElement('input', { type: 'text', id: `name-${user._id}`, defaultValue: user.name, onChange: e => setUpdateName(e.target.value) }),
+          React.createElement('input', { type: 'email', id: `email-${user._id}`, defaultValue: user.email, onChange: e => setUpdateEmail(e.target.value) }),
+          React.createElement('button', { type: 'submit' }, 'Update')
+        ),
         React.createElement('button', { onClick: () => deleteUser(user._id) }, 'Delete')
       ))
     )
   );
 }
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
