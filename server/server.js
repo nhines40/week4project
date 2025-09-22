@@ -3,13 +3,13 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const app = express();
 const https = require('https');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const WebSocket = require('ws');
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost:27017/myDatabase', { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Mongoose model to represent the user's information
 const User = mongoose.model('loginCredentials', {
   name: String,
   email: String,
@@ -17,13 +17,11 @@ const User = mongoose.model('loginCredentials', {
   googleId: String,
 });
 
-// OAuth credentials
 const linkedinClientId = '<linkedin-client-id>';
 const linkedinClientSecret = '<linkedin-client-secret>';
 const googleClientId = '';
 const googleClientSecret = '';
 
-// redirect URLs
 const linkedinRedirectUrl = 'http://localhost:3000/auth/linkedin/callback';
 const googleRedirectUrl = 'http://localhost:3000/auth/google/callback';
 
@@ -31,7 +29,25 @@ axios.defaults.httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
-// API routes
+const wss = new WebSocket.Server({ port: 8080 });
+
+wss.on('connection', (ws) => {
+  console.log('Client connected');
+
+  ws.on('message', (message) => {
+    console.log(`Received message => ${message}`);
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
+});
+
 app.get('/api/users', (req, res) => {
   User.find()
     .then(users => {
@@ -79,7 +95,6 @@ app.delete('/api/users/:id', (req, res) => {
     });
 });
 
-// Authentication routes
 app.get('/auth/linkedin', (req, res) => {
   const url = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${linkedinClientId}&redirect_uri=${linkedinRedirectUrl}&state=foobar&scope=liteprofile%20emailaddress%20w_member_social`;
   res.redirect(url);
@@ -108,7 +123,6 @@ app.get('/auth/linkedin/callback', (req, res) => {
     .then(response => {
       const userProfile = response.data;
 
-      // Store user's profile information in MongoDB database
       const user = new User({
         name: userProfile.firstName + ' ' + userProfile.lastName,
         email: userProfile.emailAddress,
@@ -151,7 +165,6 @@ app.get('/auth/google/callback', (req, res) => {
     .then(response => {
       const userProfile = response.data;
 
-      // Store user's profile information in MongoDB database
       const user = new User({
         name: userProfile.name,
         email: userProfile.email,
@@ -168,10 +181,8 @@ app.get('/auth/google/callback', (req, res) => {
     });
 });
 
-// Serve static files from the "public" directory
 app.use(express.static('public'));
 
-// Start server
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
