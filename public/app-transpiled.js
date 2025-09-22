@@ -36,6 +36,14 @@ function Crud() {
     _React$useState6 = _slicedToArray(_React$useState5, 2),
     email = _React$useState6[0],
     setEmail = _React$useState6[1];
+  var _React$useState7 = React.useState(''),
+    _React$useState8 = _slicedToArray(_React$useState7, 2),
+    updateName = _React$useState8[0],
+    setUpdateName = _React$useState8[1];
+  var _React$useState9 = React.useState(''),
+    _React$useState0 = _slicedToArray(_React$useState9, 2),
+    updateEmail = _React$useState0[0],
+    setUpdateEmail = _React$useState0[1];
   React.useEffect(function () {
     axios.get('/api/users').then(function (response) {
       setUsers(response.data);
@@ -49,18 +57,22 @@ function Crud() {
       email: email
     }).then(function (response) {
       setUsers([].concat(_toConsumableArray(users), [response.data]));
+      setName('');
+      setEmail('');
     })["catch"](function (error) {
       console.error(error);
     });
   };
   var updateUser = function updateUser(id) {
     axios.put("/api/users/".concat(id), {
-      name: name,
-      email: email
+      name: updateName,
+      email: updateEmail
     }).then(function (response) {
       setUsers(users.map(function (user) {
         return user._id === id ? response.data : user;
       }));
+      setUpdateName('');
+      setUpdateEmail('');
     })["catch"](function (error) {
       console.error(error);
     });
@@ -91,11 +103,30 @@ function Crud() {
   }, 'Create')), React.createElement('ul', null, users.map(function (user) {
     return React.createElement('li', {
       key: user._id
-    }, React.createElement('span', null, "".concat(user.name, " (").concat(user.email, ")")), React.createElement('button', {
-      onClick: function onClick() {
-        return updateUser(user._id);
+    }, React.createElement('span', null, "".concat(user.name, " (").concat(user.email, ")")), React.createElement('form', {
+      onSubmit: function onSubmit(e) {
+        e.preventDefault();
+        setUpdateName(document.getElementById("name-".concat(user._id)).value);
+        setUpdateEmail(document.getElementById("email-".concat(user._id)).value);
+        updateUser(user._id);
       }
-    }, 'Update'), React.createElement('button', {
+    }, React.createElement('input', {
+      type: 'text',
+      id: "name-".concat(user._id),
+      defaultValue: user.name,
+      onChange: function onChange(e) {
+        return setUpdateName(e.target.value);
+      }
+    }), React.createElement('input', {
+      type: 'email',
+      id: "email-".concat(user._id),
+      defaultValue: user.email,
+      onChange: function onChange(e) {
+        return setUpdateEmail(e.target.value);
+      }
+    }), React.createElement('button', {
+      type: 'submit'
+    }, 'Update')), React.createElement('button', {
       onClick: function onClick() {
         return deleteUser(user._id);
       }
@@ -103,14 +134,14 @@ function Crud() {
   })));
 }
 function App() {
-  var _React$useState7 = React.useState(false),
-    _React$useState8 = _slicedToArray(_React$useState7, 2),
-    isLoggedIn = _React$useState8[0],
-    setIsLoggedIn = _React$useState8[1];
-  var _React$useState9 = React.useState(null),
-    _React$useState0 = _slicedToArray(_React$useState9, 2),
-    loginCode = _React$useState0[0],
-    setLoginCode = _React$useState0[1];
+  var _React$useState1 = React.useState(false),
+    _React$useState10 = _slicedToArray(_React$useState1, 2),
+    isLoggedIn = _React$useState10[0],
+    setIsLoggedIn = _React$useState10[1];
+  var _React$useState11 = React.useState(null),
+    _React$useState12 = _slicedToArray(_React$useState11, 2),
+    loginCode = _React$useState12[0],
+    setLoginCode = _React$useState12[1];
   React.useEffect(function () {
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('code')) {
