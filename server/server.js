@@ -3,6 +3,9 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const app = express();
 const https = require('https');
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
 
 mongoose.connect('mongodb://localhost:27017/myDatabase', { useNewUrlParser: true, useUnifiedTopology: true });
 
