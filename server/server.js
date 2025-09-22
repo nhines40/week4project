@@ -32,7 +32,7 @@ axios.defaults.httpsAgent = new https.Agent({
 app.get('/api/users', (req, res) => {
   User.find()
     .then(users => {
-      res.json(users);
+      res.status(200).json(users);
     })
     .catch(error => {
       console.error(error);
@@ -41,10 +41,11 @@ app.get('/api/users', (req, res) => {
 });
 
 app.post('/api/users', (req, res) => {
-  const user = new User(req.body);
+  const { name, email } = req.body;
+  const user = new User({ name, email });
   user.save()
     .then(() => {
-      res.json(user);
+      res.status(201).json(user);
     })
     .catch(error => {
       console.error(error);
@@ -53,9 +54,10 @@ app.post('/api/users', (req, res) => {
 });
 
 app.put('/api/users/:id', (req, res) => {
-  User.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  const { name, email } = req.body;
+  User.findByIdAndUpdate(req.params.id, { name, email }, { new: true })
     .then(user => {
-      res.json(user);
+      res.status(200).json(user);
     })
     .catch(error => {
       console.error(error);
@@ -66,7 +68,7 @@ app.put('/api/users/:id', (req, res) => {
 app.delete('/api/users/:id', (req, res) => {
   User.findByIdAndRemove(req.params.id)
     .then(() => {
-      res.json({ message: 'User deleted successfully' });
+      res.status(200).json({ message: 'User deleted successfully' });
     })
     .catch(error => {
       console.error(error);

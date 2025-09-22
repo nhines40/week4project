@@ -28,7 +28,9 @@ function Crud() {
   }, []);
 
   const createUser = () => {
-    axios.post('/api/users', { name: document.getElementById('name').value, email: document.getElementById('email').value })
+    const nameValue = document.getElementById('name').value;
+    const emailValue = document.getElementById('email').value;
+    axios.post('/api/users', { name: nameValue, email: emailValue })
       .then(response => {
         setUsers([...users, response.data]);
         document.getElementById('name').value = '';
@@ -39,8 +41,10 @@ function Crud() {
       });
   };
 
-  const updateUser = (id, name, email) => {
-    axios.put(`/api/users/${id}`, { name: name, email: email })
+  const updateUser = (id) => {
+    const nameValue = document.getElementById(`name-${id}`).value;
+    const emailValue = document.getElementById(`email-${id}`).value;
+    axios.put(`/api/users/${id}`, { name: nameValue, email: emailValue })
       .then(response => {
         setUsers(users.map(user => user._id === id ? response.data : user));
       })
@@ -77,9 +81,7 @@ function Crud() {
         React.createElement('span', null, `${user.name} (${user.email})`),
         React.createElement('form', { onSubmit: e => {
           e.preventDefault();
-          const name = document.getElementById(`name-${user._id}`).value;
-          const email = document.getElementById(`email-${user._id}`).value;
-          updateUser(user._id, name, email);
+          updateUser(user._id);
         } },
           React.createElement('input', { type: 'text', id: `name-${user._id}`, defaultValue: user.name }),
           React.createElement('input', { type: 'email', id: `email-${user._id}`, defaultValue: user.email }),
@@ -90,8 +92,6 @@ function Crud() {
     )
   );
 }
-
-
 
 
 function App() {

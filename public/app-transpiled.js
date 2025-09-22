@@ -44,9 +44,11 @@ function Crud() {
     });
   }, []);
   var createUser = function createUser() {
+    var nameValue = document.getElementById('name').value;
+    var emailValue = document.getElementById('email').value;
     axios.post('/api/users', {
-      name: document.getElementById('name').value,
-      email: document.getElementById('email').value
+      name: nameValue,
+      email: emailValue
     }).then(function (response) {
       setUsers([].concat(_toConsumableArray(users), [response.data]));
       document.getElementById('name').value = '';
@@ -55,10 +57,12 @@ function Crud() {
       console.error(error);
     });
   };
-  var updateUser = function updateUser(id, name, email) {
+  var updateUser = function updateUser(id) {
+    var nameValue = document.getElementById("name-".concat(id)).value;
+    var emailValue = document.getElementById("email-".concat(id)).value;
     axios.put("/api/users/".concat(id), {
-      name: name,
-      email: email
+      name: nameValue,
+      email: emailValue
     }).then(function (response) {
       setUsers(users.map(function (user) {
         return user._id === id ? response.data : user;
@@ -90,9 +94,7 @@ function Crud() {
     }, React.createElement('span', null, "".concat(user.name, " (").concat(user.email, ")")), React.createElement('form', {
       onSubmit: function onSubmit(e) {
         e.preventDefault();
-        var name = document.getElementById("name-".concat(user._id)).value;
-        var email = document.getElementById("email-".concat(user._id)).value;
-        updateUser(user._id, name, email);
+        updateUser(user._id);
       }
     }, React.createElement('input', {
       type: 'text',
