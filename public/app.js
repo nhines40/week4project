@@ -27,7 +27,8 @@ function Crud() {
       });
   }, []);
 
-  const createUser = () => {
+  const createUser = (e) => {
+    e.preventDefault();
     const nameValue = document.getElementById('name').value;
     const emailValue = document.getElementById('email').value;
     axios.post('/api/users', { name: nameValue, email: emailValue })
@@ -44,22 +45,28 @@ function Crud() {
   const updateUser = (id) => {
     const nameValue = document.getElementById(`name-${id}`).value;
     const emailValue = document.getElementById(`email-${id}`).value;
+    console.log('Updating user with ID:', id);
+    console.log('Name:', nameValue);
+    console.log('Email:', emailValue);
     axios.put(`/api/users/${id}`, { name: nameValue, email: emailValue })
       .then(response => {
+        console.log('Update response:', response);
         setUsers(users.map(user => user._id === id ? response.data : user));
       })
       .catch(error => {
-        console.error(error);
+        console.error('Update error:', error);
       });
   };
 
   const deleteUser = (id) => {
+    console.log('Deleting user with ID:', id);
     axios.delete(`/api/users/${id}`)
       .then(response => {
+        console.log('Delete response:', response);
         setUsers(users.filter(user => user._id !== id));
       })
       .catch(error => {
-        console.error(error);
+        console.error('Delete error:', error);
       });
   };
 
@@ -67,14 +74,14 @@ function Crud() {
     'div',
     null,
     React.createElement('h1', null, 'CRUD Operations'),
-    React.createElement('form', null,
+    React.createElement('form', { onSubmit: createUser }, 
       React.createElement('label', null, 'Name:'),
       React.createElement('input', { type: 'text', id: 'name' }),
       React.createElement('br', null),
       React.createElement('label', null, 'Email:'),
       React.createElement('input', { type: 'email', id: 'email' }),
       React.createElement('br', null),
-      React.createElement('button', { onClick: createUser }, 'Create')
+      React.createElement('button', { type: 'submit' }, 'Create')
     ),
     React.createElement('ul', null,
       users.map(user => React.createElement('li', { key: user._id },
@@ -92,7 +99,6 @@ function Crud() {
     )
   );
 }
-
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);

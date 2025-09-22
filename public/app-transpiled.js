@@ -43,7 +43,8 @@ function Crud() {
       console.error(error);
     });
   }, []);
-  var createUser = function createUser() {
+  var createUser = function createUser(e) {
+    e.preventDefault();
     var nameValue = document.getElementById('name').value;
     var emailValue = document.getElementById('email').value;
     axios.post('/api/users', {
@@ -60,34 +61,42 @@ function Crud() {
   var updateUser = function updateUser(id) {
     var nameValue = document.getElementById("name-".concat(id)).value;
     var emailValue = document.getElementById("email-".concat(id)).value;
+    console.log('Updating user with ID:', id);
+    console.log('Name:', nameValue);
+    console.log('Email:', emailValue);
     axios.put("/api/users/".concat(id), {
       name: nameValue,
       email: emailValue
     }).then(function (response) {
+      console.log('Update response:', response);
       setUsers(users.map(function (user) {
         return user._id === id ? response.data : user;
       }));
     })["catch"](function (error) {
-      console.error(error);
+      console.error('Update error:', error);
     });
   };
   var deleteUser = function deleteUser(id) {
+    console.log('Deleting user with ID:', id);
     axios["delete"]("/api/users/".concat(id)).then(function (response) {
+      console.log('Delete response:', response);
       setUsers(users.filter(function (user) {
         return user._id !== id;
       }));
     })["catch"](function (error) {
-      console.error(error);
+      console.error('Delete error:', error);
     });
   };
-  return React.createElement('div', null, React.createElement('h1', null, 'CRUD Operations'), React.createElement('form', null, React.createElement('label', null, 'Name:'), React.createElement('input', {
+  return React.createElement('div', null, React.createElement('h1', null, 'CRUD Operations'), React.createElement('form', {
+    onSubmit: createUser
+  }, React.createElement('label', null, 'Name:'), React.createElement('input', {
     type: 'text',
     id: 'name'
   }), React.createElement('br', null), React.createElement('label', null, 'Email:'), React.createElement('input', {
     type: 'email',
     id: 'email'
   }), React.createElement('br', null), React.createElement('button', {
-    onClick: createUser
+    type: 'submit'
   }, 'Create')), React.createElement('ul', null, users.map(function (user) {
     return React.createElement('li', {
       key: user._id
