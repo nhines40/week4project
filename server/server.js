@@ -69,7 +69,7 @@ app.put('/api/users/:id', (req, res) => {
 });
 
 app.delete('/api/users/:id', (req, res) => {
-  User.findByIdAndRemove(req.params.id)
+  User.findByIdAndDelete(req.params.id)
     .then(() => {
       res.status(200).json({ message: 'User deleted successfully' });
     })
