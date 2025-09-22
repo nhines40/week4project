@@ -1,8 +1,8 @@
 const React = window.React;
 const ReactDOM = window.ReactDOM;
 const axios = window.axios;
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+const i18n = window.i18next;
+const { initReactI18next } = window.reactI18next;
 
 i18n
   .use(initReactI18next)
@@ -72,6 +72,15 @@ const Crud = () => {
   const [language, setLanguage] = React.useState('en');
   const [highContrastMode, setHighContrastMode] = React.useState(false);
 
+  const translateToFrench = i18n.t('translation.translateToFrench');
+  const toggleHighContrastModeText = i18n.t('translation.toggleHighContrastMode');
+  const crudOperationsText = i18n.t('translation.crudOperations');
+  const nameText = i18n.t('translation.name');
+  const emailText = i18n.t('translation.email');
+  const createText = i18n.t('translation.create');
+  const updateText = i18n.t('translation.update');
+  const deleteText = i18n.t('translation.delete');
+
   React.useEffect(() => {
     axios.get('/api/users')
       .then(response => {
@@ -125,11 +134,11 @@ const Crud = () => {
       });
   };
 
-  const translateToFrench = () => {
+  const translateToFrenchHandler = () => {
     i18n.changeLanguage('fr');
   };
 
-  const toggleHighContrastMode = () => {
+  const toggleHighContrastModeHandler = () => {
     setHighContrastMode(!highContrastMode);
   };
 
@@ -138,23 +147,23 @@ const Crud = () => {
     { style: highContrastMode ? { backgroundColor: 'black', color: 'white' } : {} },
     React.createElement(
       'button',
-      { onClick: translateToFrench },
-      i18n.t('translation.translateToFrench')
+      { onClick: translateToFrenchHandler },
+      translateToFrench
     ),
     React.createElement(
       'button',
-      { onClick: toggleHighContrastMode },
-      i18n.t('translation.toggleHighContrastMode')
+      { onClick: toggleHighContrastModeHandler },
+      toggleHighContrastModeText
     ),
-    React.createElement('h1', null, i18n.t('translation.crudOperations')),
+    React.createElement('h1', null, crudOperationsText),
     React.createElement('form', { onSubmit: createUser }, 
-      React.createElement('label', null, i18n.t('translation.name')),
+      React.createElement('label', null, nameText),
       React.createElement('input', { type: 'text', id: 'name' }),
       React.createElement('br', null),
-      React.createElement('label', null, i18n.t('translation.email')),
+      React.createElement('label', null, emailText),
       React.createElement('input', { type: 'email', id: 'email' }),
       React.createElement('br', null),
-      React.createElement('button', { type: 'submit' }, i18n.t('translation.create'))
+      React.createElement('button', { type: 'submit' }, createText)
     ),
     React.createElement('ul', null,
       users.map(user => React.createElement('li', { key: user._id },
@@ -165,9 +174,9 @@ const Crud = () => {
         } },
           React.createElement('input', { type: 'text', id: `name-${user._id}`, defaultValue: user.name }),
           React.createElement('input', { type: 'email', id: `email-${user._id}`, defaultValue: user.email }),
-          React.createElement('button', { type: 'submit' }, i18n.t('translation.update'))
+          React.createElement('button', { type: 'submit' }, updateText)
         ),
-        React.createElement('button', { onClick: () => deleteUser(user._id) }, i18n.t('translation.delete'))
+        React.createElement('button', { onClick: () => deleteUser(user._id) }, deleteText)
       ))
     )
   );
