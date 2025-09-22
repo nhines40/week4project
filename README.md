@@ -15,6 +15,9 @@ Google Developer account
 4. Create a new LinkedIn Developer account and add the client ID and client secret to the linkedinClientId and linkedinClientSecret variables in server.js and app.js
 5. Create a new Google Developer account and add the client ID and client secret to the googleClientId and googleClientSecret variables in server.js and app.js
 
+## Transpiler
+Whenever the code in `public/app.js` is updated the code need to be transpiled running the command `npx esbuild public/app.js --bundle --outfile=public/app-transpiled.js` and the resulting code in `public/app-transpiled.js` will be ran as the app
+
 ## Configuring Social Media Login
 
 LinkedIn:
