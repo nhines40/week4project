@@ -1,8 +1,8 @@
 const React = window.React;
 const ReactDOM = window.ReactDOM;
 const axios = window.axios;
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+const i18n = window.i18next;
+const { initReactI18next } = window.reactI18next;
 
 i18n
   .use(initReactI18next)
@@ -18,6 +18,8 @@ i18n
           create: 'Create',
           update: 'Update',
           delete: 'Delete',
+          translateToFrench: 'Translate to French',
+          toggleHighContrastMode: 'Toggle High Contrast Mode',
         },
       },
       fr: {
@@ -29,6 +31,8 @@ i18n
           create: 'Créer',
           update: 'Mettre à jour',
           delete: 'Supprimer',
+          translateToFrench: 'Traduire en français',
+          toggleHighContrastMode: 'Activer/désactiver le contraste élevé',
         },
       },
     },
@@ -122,7 +126,7 @@ const Crud = () => {
   };
 
   const translateToFrench = () => {
-    setLanguage('fr');
+    i18n.changeLanguage('fr');
   };
 
   const toggleHighContrastMode = () => {
