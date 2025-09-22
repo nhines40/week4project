@@ -1,42 +1,6 @@
 const React = window.React;
 const ReactDOM = window.ReactDOM;
 const axios = window.axios;
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-
-i18n
-  .use(initReactI18next)
-  .init({
-    lng: 'en',
-    resources: {
-      en: {
-        translation: {
-          hello: 'Hello',
-          crudOperations: 'CRUD Operations',
-          name: 'Name:',
-          email: 'Email:',
-          create: 'Create',
-          update: 'Update',
-          delete: 'Delete',
-          translateToFrench: 'Translate to French',
-          toggleHighContrastMode: 'Toggle High Contrast Mode',
-        },
-      },
-      fr: {
-        translation: {
-          hello: 'Bonjour',
-          crudOperations: 'Opérations CRUD',
-          name: 'Nom:',
-          email: 'Courriel:',
-          create: 'Créer',
-          update: 'Mettre à jour',
-          delete: 'Supprimer',
-          translateToFrench: 'Traduire en français',
-          toggleHighContrastMode: 'Activer/désactiver le contraste élevé',
-        },
-      },
-    },
-  });
 
 const socket = new WebSocket('ws://localhost:8080');
 
@@ -69,17 +33,7 @@ const Crud = () => {
   const [users, setUsers] = React.useState([]);
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [language, setLanguage] = React.useState('en');
   const [highContrastMode, setHighContrastMode] = React.useState(false);
-
-  const translateToFrench = i18n.t('translation.translateToFrench');
-  const toggleHighContrastModeText = i18n.t('translation.toggleHighContrastMode');
-  const crudOperationsText = i18n.t('translation.crudOperations');
-  const nameText = i18n.t('translation.name');
-  const emailText = i18n.t('translation.email');
-  const createText = i18n.t('translation.create');
-  const updateText = i18n.t('translation.update');
-  const deleteText = i18n.t('translation.delete');
 
   React.useEffect(() => {
     axios.get('/api/users')
@@ -134,53 +88,45 @@ const Crud = () => {
       });
   };
 
-  const translateToFrenchHandler = () => {
-    i18n.changeLanguage('fr');
-  };
-
   const toggleHighContrastModeHandler = () => {
     setHighContrastMode(!highContrastMode);
   };
 
   return React.createElement(
     'div',
-    { style: highContrastMode ? { backgroundColor: 'black', color: 'white' } : {} },
+    { style: { textAlign: 'center', width: '100%' } },
     React.createElement(
       'button',
-      { onClick: translateToFrenchHandler },
-      translateToFrench
+      { onClick: toggleHighContrastModeHandler, style: { margin: '10px' } },
+      'Toggle High Contrast Mode'
     ),
-    React.createElement(
-      'button',
-      { onClick: toggleHighContrastModeHandler },
-      toggleHighContrastModeText
-    ),
-    React.createElement('h1', null, crudOperationsText),
-    React.createElement('form', { onSubmit: createUser }, 
-      React.createElement('label', null, nameText),
-      React.createElement('input', { type: 'text', id: 'name' }),
+    React.createElement('h1', { style: { margin: '10px' } }, 'CRUD Operations'),
+    React.createElement('form', { onSubmit: createUser, style: { margin: '10px' } }, 
+      React.createElement('label', { style: { display: 'block', margin: '10px' } }, 'Name:'),
+      React.createElement('input', { type: 'text', id: 'name', style: { width: '50%', margin: '10px' } }),
       React.createElement('br', null),
-      React.createElement('label', null, emailText),
-      React.createElement('input', { type: 'email', id: 'email' }),
+      React.createElement('label', { style: { display: 'block', margin: '10px' } }, 'Email:'),
+      React.createElement('input', { type: 'email', id: 'email', style: { width: '50%', margin: '10px' } }),
       React.createElement('br', null),
-      React.createElement('button', { type: 'submit' }, createText)
+      React.createElement('button', { type: 'submit', style: { margin: '10px' } }, 'Create')
     ),
-    React.createElement('ul', null,
-      users.map(user => React.createElement('li', { key: user._id },
-        React.createElement('span', null, `${user.name} (${user.email})`),
+    React.createElement('ul', { style: { listStyle: 'none', padding: '0', margin: '0' } },
+      users.map(user => React.createElement('li', { key: user._id, style: { margin: '10px' } },
+        React.createElement('span', { style: { display: 'block', margin: '10px' } }, `${user.name} (${user.email})`),
         React.createElement('form', { onSubmit: e => {
           e.preventDefault();
           updateUser(user._id);
-        } },
-          React.createElement('input', { type: 'text', id: `name-${user._id}`, defaultValue: user.name }),
-          React.createElement('input', { type: 'email', id: `email-${user._id}`, defaultValue: user.email }),
-          React.createElement('button', { type: 'submit' }, updateText)
+        }, style: { margin: '10px' } },
+          React.createElement('input', { type: 'text', id: `name-${user._id}`, defaultValue: user.name, style: { width: '50%', margin: '10px' } }),
+          React.createElement('input', { type: 'email', id: `email-${user._id}`, defaultValue: user.email, style: { width: '50%', margin: '10px' } }),
+          React.createElement('button', { type: 'submit', style: { margin: '10px' } }, 'Update')
         ),
-        React.createElement('button', { onClick: () => deleteUser(user._id) }, deleteText)
+        React.createElement('button', { onClick: () => deleteUser(user._id), style: { margin: '10px' } }, 'Delete')
       ))
     )
   );
 };
+
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
