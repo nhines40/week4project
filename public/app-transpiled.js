@@ -73,7 +73,7 @@
     };
     return React.createElement(
       "div",
-      { style: { textAlign: "center", width: "100%" } },
+      { style: { textAlign: "center", width: "100%", backgroundColor: highContrastMode ? "black" : "", color: highContrastMode ? "white" : "" } },
       React.createElement(
         "button",
         { onClick: toggleHighContrastModeHandler, style: { margin: "10px" } },
