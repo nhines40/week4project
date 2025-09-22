@@ -16,7 +16,7 @@ var ReactDOM = window.ReactDOM;
 
 // Function to handle LinkedIn login
 function linkedinLogin() {
-  window.location.href = ' /auth/linkedin';
+  window.location.href = '/auth/linkedin';
 }
 
 // Function to handle Google login
@@ -107,9 +107,14 @@ function App() {
     _React$useState8 = _slicedToArray(_React$useState7, 2),
     isLoggedIn = _React$useState8[0],
     setIsLoggedIn = _React$useState8[1];
+  var _React$useState9 = React.useState(null),
+    _React$useState0 = _slicedToArray(_React$useState9, 2),
+    loginCode = _React$useState0[0],
+    setLoginCode = _React$useState0[1];
   React.useEffect(function () {
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('code')) {
+      setLoginCode(urlParams.get('code'));
       setIsLoggedIn(true);
     }
   }, []);
@@ -121,6 +126,6 @@ function App() {
   }, 'Login with LinkedIn'), React.createElement('button', {
     id: 'google-login',
     onClick: googleLogin
-  }, 'Login with Google')), isLoggedIn && React.createElement(Crud, null));
+  }, 'Login with Google')), isLoggedIn && loginCode === 'linkedin' && React.createElement(Crud, null), isLoggedIn && loginCode === 'google' && React.createElement(Crud, null));
 }
 ReactDOM.render(React.createElement(App, null), document.getElementById('root'));
