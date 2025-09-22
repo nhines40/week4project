@@ -1,8 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import axios from 'axios';
-import { Provider } from 'react-redux';
-import store from './store';
+const React = window.React;
+const ReactDOM = window.ReactDOM;
+const axios = window.axios;
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
@@ -199,10 +197,6 @@ const App = () => {
 };
 
 ReactDOM.render(React.createElement(
-  Provider,
-  { store },
-  React.createElement(
-    App,
-    null
-  )
+  App,
+  null
 ), document.getElementById('root'));

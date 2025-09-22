@@ -19,8 +19,9 @@ const User = mongoose.model('loginCredentials', {
 
 const linkedinClientId = '<linkedin-client-id>';
 const linkedinClientSecret = '<linkedin-client-secret>';
-const googleClientId = '';
-const googleClientSecret = '';
+const googleClientId = '64252434551-n7s6q2fdcaropeq92vqqbt0akb6sbk2k.apps.googleusercontent.com';
+const googleClientSecret = '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';
+
 
 const linkedinRedirectUrl = 'http://localhost:3000/auth/linkedin/callback';
 const googleRedirectUrl = 'http://localhost:3000/auth/google/callback';
